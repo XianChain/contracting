@@ -54,7 +54,7 @@ class ContractingDecimal:
         if isinstance(other, ContractingDecimal):
             return other._d
         elif isinstance(other, (float, int)):
-            return Decimal(neg_sci_not(str(other)))
+            return fix_precision(Decimal(neg_sci_not(str(other))))
         return other
 
     def __init__(self, a):
