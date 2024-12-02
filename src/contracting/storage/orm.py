@@ -159,6 +159,7 @@ class LogEvent:
     """
 
     def __init__(self, contract, name, event, params, driver: Driver = driver):
+
         self._driver = driver
         self._params = params
         self._contract = contract
@@ -180,9 +181,9 @@ class LogEvent:
                 for t in param["type"]
             ), "Each type in args must be str, int, float, or bool."
 
-    def write_event(self, event_data):
 
-        # Check that the number of arguments matches
+    def write_event(self, event_data):
+        print(f"event_data: {event_data}")
         assert len(event_data) == len(
             self._params
         ), "Event Data must have the same number of arguments as specified in the event."
@@ -210,7 +211,7 @@ class LogEvent:
             assert (
                 value_size <= 1024
             ), f"Argument {arg} is too large ({value_size} bytes). Max is 1024 bytes."
-
+        
         event = {
             "contract": self._contract,
             "event": self._event,
@@ -228,7 +229,6 @@ class LogEvent:
             },
         }
 
-        # breakpoint()
 
         for arg, value in event["data_indexed"].items():
             assert isinstance(
@@ -243,6 +243,7 @@ class LogEvent:
             encoded = encode_kv(arg, value)
             rt.deduct_write(*encoded, multiplier=0.5)
 
+        
         self._driver.set_event(event)
 
 
