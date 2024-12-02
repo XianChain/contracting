@@ -249,26 +249,3 @@ class LogEvent:
 
     def __call__(self, data):
         self.write_event(data)
-
-
-"""
-Usage:
-
-TransferEvent = LogEvent(
-    name="Transfer",
-    args={
-        "from": {"type": str, "idx": True},
-        "to": {"type": str, "idx": True},
-        "amount": {"type": (int, float, ContractingDecimal)}
-    },
-)
-
-
-@export
-def transfer(self, from_address, to_address, amount):
-    # Perform the transfer logic
-    # ...
-
-    # Log the transfer event
-    TransferEvent({"from": from_address, "to": to_address, "amount": amount})
-"""
