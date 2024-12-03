@@ -159,7 +159,6 @@ class LogEvent:
     """
 
     def __init__(self, contract, name, event, params, driver: Driver = driver):
-
         self._driver = driver
         self._params = params
         self._contract = contract
@@ -183,7 +182,6 @@ class LogEvent:
 
 
     def write_event(self, event_data):
-        print(f"event_data: {event_data}")
         assert len(event_data) == len(
             self._params
         ), "Event Data must have the same number of arguments as specified in the event."
