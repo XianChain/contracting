@@ -151,7 +151,7 @@ class ForeignHash(Hash):
         raise Exception("Cannot write with a ForeignHash.")
 
 
-class LogEvent:
+class LogEvent(Datum):
     """
     TODO
     - Break validation into smaller functions
@@ -176,9 +176,9 @@ class LogEvent:
                 param["type"] = (param["type"],)
 
             assert all(
-                issubclass(t, (str, int, float, bool))
+                issubclass(t, (str, int, float, bool, ContractingDecimal))
                 for t in param["type"]
-            ), "Each type in args must be str, int, float, or bool."
+            ), "Each type in args must be str, int, float, decimal or bool."
 
 
     def write_event(self, event_data):
@@ -241,7 +241,6 @@ class LogEvent:
             encoded = encode_kv(arg, value)
             rt.deduct_write(*encoded, multiplier=0.5)
 
-        
         self._driver.set_event(event)
 
 
