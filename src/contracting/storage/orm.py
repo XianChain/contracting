@@ -163,6 +163,8 @@ class LogEvent(Datum):
         self._params = params
         self._contract = contract
         self._event = event
+        self._signer = rt.context.signer
+        self._caller = rt.context.caller
 
         assert isinstance(params, dict), "Args must be a dictionary."
         assert len(params) > 0, "Args must have at least one argument."
@@ -213,8 +215,8 @@ class LogEvent(Datum):
         event = {
             "contract": self._contract,
             "event": self._event,
-            "signer": rt.context.signer,
-            "caller": rt.context.caller,
+            "signer": self._signer,
+            "caller": self._caller,
             "data_indexed": {
                 arg: event_data[arg]
                 for arg in self._params
