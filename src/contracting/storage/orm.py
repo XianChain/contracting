@@ -159,6 +159,13 @@ class LogEvent(Datum):
     """
 
     def __init__(self, contract, name, event, params, driver: Driver = driver):
+        print("contract", contract)
+        print("name", name)
+        print("event", event)
+        print("params", params)
+        print("signer", rt.context.signer)
+        print("caller", rt.context.caller)
+        print("this", rt.context.this)
         self._driver = driver
         self._params = params
         self._contract = contract
@@ -184,6 +191,8 @@ class LogEvent(Datum):
 
 
     def write_event(self, event_data):
+        contract = rt.context.this
+        caller = rt.context.caller
         assert len(event_data) == len(
             self._params
         ), "Event Data must have the same number of arguments as specified in the event."
@@ -213,10 +222,10 @@ class LogEvent(Datum):
             ), f"Argument {arg} is too large ({value_size} bytes). Max is 1024 bytes."
         
         event = {
-            "contract": self._contract,
+            "contract": contract,
             "event": self._event,
             "signer": self._signer,
-            "caller": self._caller,
+            "caller": caller,
             "data_indexed": {
                 arg: event_data[arg]
                 for arg in self._params
