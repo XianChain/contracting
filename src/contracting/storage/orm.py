@@ -193,6 +193,8 @@ class LogEvent(Datum):
     def write_event(self, event_data):
         contract = rt.context.this
         caller = rt.context.caller
+        print("contract", contract)
+        print("caller", caller)
         assert len(event_data) == len(
             self._params
         ), "Event Data must have the same number of arguments as specified in the event."
