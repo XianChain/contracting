@@ -14,25 +14,30 @@ class Datum:
 
 
 class Variable(Datum):
-    def __init__(self, contract, name, driver: Driver = driver, t=None):
+    def __init__(self, contract, name, driver: Driver = driver, t=None, default_value=None):
         self._type = None
 
-        if isinstance(t, type) or None:
+        if isinstance(t, type):
             self._type = t
+
+        self._default_value = default_value
 
         super().__init__(contract, name, driver=driver)
 
     def set(self, value):
-        if self._type is not None:
+        if self._type is not None and value is not None:
             assert isinstance(value, self._type), (
-                f"Wrong type passed to variable! "
-                f"Expected {self._type}, got {type(value)}."
+              f'Wrong type passed to variable! '
+              f'Expected {self._type}, got {type(value)}.'
             )
 
         self._driver.set(self._key, value, True)
 
     def get(self):
-        return self._driver.get(self._key)
+        value = self._driver.get(self._key)
+        if value is None:
+            return self._default_value
+        return value
 
 class Hash(Datum):
     def __init__(self, contract, name, driver: Driver = driver, default_value=None):
@@ -159,19 +164,10 @@ class LogEvent(Datum):
     """
 
     def __init__(self, contract, name, event, params, driver: Driver = driver):
-        print("contract", contract)
-        print("name", name)
-        print("event", event)
-        print("params", params)
-        print("signer", rt.context.signer)
-        print("caller", rt.context.caller)
-        print("this", rt.context.this)
         self._driver = driver
         self._params = params
-        self._contract = contract
         self._event = event
         self._signer = rt.context.signer
-        self._caller = rt.context.caller
 
         assert isinstance(params, dict), "Args must be a dictionary."
         assert len(params) > 0, "Args must have at least one argument."
@@ -193,8 +189,6 @@ class LogEvent(Datum):
     def write_event(self, event_data):
         contract = rt.context.this
         caller = rt.context.caller
-        print("contract", contract)
-        print("caller", caller)
         assert len(event_data) == len(
             self._params
         ), "Event Data must have the same number of arguments as specified in the event."
